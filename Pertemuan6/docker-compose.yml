@@ -1,0 +1,66 @@
+name: manajemen-basis-data-pertemuan6
+
+services:
+  mariadb:
+    container_name: mariadb
+    image: mariadb
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+    volumes:
+      - mariadb:/var/lib/mysql
+    ports:
+      - 3307:3306
+    networks:
+      - mariadb
+    restart: unless-stopped
+
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: phpmyadmin
+    environment:
+      PMA_HOST: mariadb
+    ports:
+      - '8081:80'
+    networks:
+      - mariadb
+    restart: unless-stopped
+
+  postgres:
+    container_name: postgres
+    image: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - '5433:5432'
+    networks:
+      - postgres
+    restart: unless-stopped
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - '5050:80'
+    networks:
+      - postgres
+    restart: unless-stopped
+
+networks:
+  mariadb:
+  postgres:
+
+volumes:
+  mariadb:
+  postgres:
+  pgadmin:
+
